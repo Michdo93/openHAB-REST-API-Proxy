@@ -17,7 +17,12 @@ class OpenHABProxy:
 
     def proxy(self, path):
         url = self.openhab_base_url + '/' + path
-        headers = request.headers  # Verwende die Header des eingehenden Requests
+        headers = request.headers.copy()  # Kopiere die Header des eingehenden Requests
+
+        # Entferne die CORS-Header aus den zu sendenden Headers
+        headers.pop('Access-Control-Allow-Origin', None)
+        headers.pop('Access-Control-Allow-Headers', None)
+        headers.pop('Access-Control-Allow-Methods', None)
 
         if request.method == 'GET':
             response = requests.get(url, headers=headers, params=request.args)
